@@ -1,4 +1,30 @@
-.App {
-  margin: 1rem;
-  font-family: Arial, Helvetica, sans-serif;
+.chairs {
+  display: block;
+}
+
+.seat-row{
+  display: block;  
+  margin: 10px;
+}
+
+.chair{
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  display: inline-block;
+}
+.chair--state-free{
+  background-image: url("./images/free-chair.png");
+  text-align: center;
+  
+}
+
+.chair--state-busy{
+  background-image: url("./images/busy-chair.png");
+  text-align: center;
+}
+
+.chair--state-booked{
+  background-image: url("./images/booked-chair.png");
+  text-align: center;
 }
