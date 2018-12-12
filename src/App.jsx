@@ -1,6 +1,6 @@
 import React from "react";
 import { createStore } from "redux";
-import "./App.css";
+// import "./App.css";
 
 /*
 const actions = {

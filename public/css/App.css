@@ -14,17 +14,17 @@
   display: inline-block;
 }
 .chair--state-free{
-  background-image: url("./images/free-chair.png");
+  background-image: url("../images/free-chair.png");
   text-align: center;
   
 }
 
 .chair--state-busy{
-  background-image: url("./images/busy-chair.png");
+  background-image: url("../images/busy-chair.png");
   text-align: center;
 }
 
 .chair--state-booked{
-  background-image: url("./images/booked-chair.png");
+  background-image: url("../images/booked-chair.png");
   text-align: center;
 }
