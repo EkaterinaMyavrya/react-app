@@ -1,16 +1,46 @@
 
+const sqlite3 = require("sqlite3").verbose();
+
+    function getTimeTable() {    
+       
+        let db = new sqlite3.Database('ValamisCinema.sqlite');
+
+        let timeTable = [];
+
+        db.serialize(function () {            
+            const sql = "select datetime, movie, hall from Shows";
+           
+
+            db.all(sql, [], (err, rows) => {
+                if (err) {
+                    throw err;
+                }
+
+                rows.forEach((row) => {
+                    timeTable.push({
+                        datetime: row.datetime,
+                        movie: row.movie,
+                        hall: row.hall
+                    })
+                });
+            });
+
+            db.close();
+        });
+
+        return timeTable;
+    }
 
     function createDb(){
-            
-        const sqlite3 = require('sqlite3').verbose();
-        const db = new sqlite3.Database(':memory:');
+                    
+        let db = new sqlite3.Database('ValamisCinema.sqlite');
 
         db.serialize(function () {
-            db.run("create table Halls (id int, name text)");
-            db.run("create table Seats (id int, id_hall int, row int, seat id)");
-            db.run("create table States (id int, state text)");
-            db.run("create table Shows (id int, time datetime, movie text, hall int)");
-            db.run("create table Booking (id int, show id, seat id, state id)");
+            db.run("create table IF NOT EXISTS Halls (id int, name text)");
+            db.run("create table IF NOT EXISTS Seats (id int, id_hall int, row int, seat id)");
+            db.run("create table IF NOT EXISTS States (id int, state text)");
+            db.run("create table IF NOT EXISTS Shows (id int, time datetime, movie text, hall int)");
+            db.run("create table IF NOT EXISTS Booking (id int, show id, seat id, state id)");
 
             let stmt = db.prepare("insert into Halls values (?, ?)");
             for (let i = 1; i < 4; i++) {
@@ -50,9 +80,13 @@
             stmt.run(9, "2019-01-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
             stmt.finalize();
 
-            db.close();
-
+          
         });
+
+        db.close();
+
     }
 
     exports.createDb = () => createDb();
+    exports.getTimeTable = () => getTimeTable();
+    

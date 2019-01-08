@@ -29,10 +29,16 @@ module.exports = {
                         },
                     },
                 ]
-            }          
+            }       
         ]
-    },
+    },   
     resolve: { extensions: ['*', '.js', '.jsx'] },
+    node: {
+        console: true,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    },
     output: {
         path: path.resolve(__dirname, "dist/"),
         publicPath: "/dist/",
