@@ -10,9 +10,14 @@ dbCreator.createDb();
 
 app.get('/timetable', function (req, res) {
     console.log('inside get timetable');
-    const timeTable = dbCreator.getTimeTable();
-    res.json(timeTable);
+    const successCallback = function (timetable)  {
+         res.json(timetable); 
+        };
+        
+            dbCreator.getTimeTable(successCallback);        
 });
+
+
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
