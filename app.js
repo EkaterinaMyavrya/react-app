@@ -14,7 +14,7 @@ app.get('/timetable', function (req, res) {
          res.json(timetable); 
         };
         
-            dbCreator.getTimeTable(successCallback);        
+    dbCreator.getTimeTable(successCallback);        
 });
 
 

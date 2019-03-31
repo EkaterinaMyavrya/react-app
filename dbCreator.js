@@ -1,5 +1,5 @@
 
-import promisify from './utils'
+const utils = require('./utils');
 
 const sqlite3 = require("sqlite3").verbose();
 
@@ -14,28 +14,32 @@ const sqlite3 = require("sqlite3").verbose();
             console.log('inside db serialize');
 
 
-            let promisifiedDbAll = promisify(db.all(sql, [], callback));
-            promisifiedDbAll()
+            let promisifiedDbAll = utils.promisify(db.all.bind(db));
+            promisifiedDbAll(sql, [])
             .then(rows => 
                 {
                     rows.forEach((row) => {
-                console.log(
-                    `date: ${row.time} movie: ${row.movie} hall: ${row.hall}`
-                );
-                timeTable.push({
-                    datetime: row.time,
-                    movie: row.movie,
-                    hall: row.hall
-                });
-            }); }
-            ).catch(err => {throw err;});
+                        console.log(
+                            `date: ${row.time} movie: ${row.movie} hall: ${row.hall}`
+                        );
+                        timeTable.push({
+                        datetime: row.time,
+                        movie: row.movie,
+                        hall: row.hall
+                        });
+                    }); 
 
-            onSuccessCallback(timeTable);
+                onSuccessCallback(timeTable);
+                }
+            ).catch(err => {
+                console.log(err)});
+
+          
             });
              
         
         db.close();        
-    }
+        };
 
     function createDb(){
                     

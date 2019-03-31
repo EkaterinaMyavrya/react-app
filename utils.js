@@ -1,14 +1,21 @@
-export const promisify = function(fnToPromisify){
+function promisify(fnToPromisify){
 
-    const result = (...arguments) => {
-        return new Promise((resolve, reject) =>
-        {
-            // this?
-            fnToPromisify.apply(this, arguments);
+    return (...args) => {
+       
+        return new Promise((resolve, reject) => {    
+                 
+            fnToPromisify(...args, (error, result) => {
+                if (error) {                
+                    reject(error);
+                } else {                
+                    resolve(result);
+                }
+            });            
         });
     };
-
-    return result;
-
 };
+
+
+
+exports.promisify = (fnToPromisify) => promisify(fnToPromisify);
 
