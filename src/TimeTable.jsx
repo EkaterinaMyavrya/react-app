@@ -3,17 +3,18 @@ import { createStore } from "redux";
 
 export class TimeTable extends React.Component {
     constructor(props) {
-        super(props)
-        this.state = { timeTable: [1,2]};
+        super(props);
+        this.props.store = [];
     }
 
     render(){
         return(<div className="background">
             <h2 className="logo">Valamis cinema</h2>
             <div className="timeTable">
-                { this.state.timeTable.map(item =>(
+            
+                {this.props.store.timeTableRows.map(item =>(
                     <div className="timetable-row" key={item}>       
-                    item               
+                    item.datetime item.movie item.hall             
                     </div>
                 ) )}
                 

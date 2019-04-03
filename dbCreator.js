@@ -1,18 +1,14 @@
-
 const utils = require('./utils');
-
 const sqlite3 = require("sqlite3").verbose();
 
-    function getTimeTable(onSuccessCallback) {    
+function _getTimeTable(callBack) {    
        
-        const db = new sqlite3.Database('../ValamisCinema.sqlite');
-
-        let timeTable = [];
+    const db = new sqlite3.Database('../ValamisCinema.sqlite');
+    let timeTable = [];
         
         db.serialize(function () {            
             const sql = "select time, movie, hall from Shows";
             console.log('inside db serialize');
-
 
             let promisifiedDbAll = utils.promisify(db.all.bind(db));
             promisifiedDbAll(sql, [])
@@ -29,21 +25,20 @@ const sqlite3 = require("sqlite3").verbose();
                         });
                     }); 
 
-                onSuccessCallback(timeTable);
+                callBack(null, timeTable);
                 }
             ).catch(err => {
-                console.log(err)});
-
-          
-            });
-             
+                callBack(err, timeTable);});          
+            });             
         
         db.close();        
-        };
+ };
 
-    function createDb(){
+const getTimeTable = utils.promisify(_getTimeTable.bind(this));
+
+function createDb(){
                     
-        let db = new sqlite3.Database('../ValamisCinema.sqlite');
+    let db = new sqlite3.Database('../ValamisCinema.sqlite');
 
         db.serialize(function () {
             db.run("drop table if exists Halls");
@@ -109,10 +104,10 @@ const sqlite3 = require("sqlite3").verbose();
           
         });
 
-        db.close();
+    db.close();
 
-    }
+}
 
-    exports.createDb = () => createDb();
-    exports.getTimeTable = (callback) => getTimeTable(callback);
+exports.createDb = () => createDb();
+exports.getTimeTable = () => getTimeTable();
     

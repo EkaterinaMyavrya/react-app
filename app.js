@@ -8,13 +8,8 @@ app.use(express.static("dist"));
 
 dbCreator.createDb();
 
-app.get('/timetable', function (req, res) {
-    console.log('inside get timetable');
-    const successCallback = function (timetable)  {
-         res.json(timetable); 
-        };
-        
-    dbCreator.getTimeTable(successCallback);        
+app.get('/timetable', function (req, res) {    
+    dbCreator.getTimeTable().then(timetable => res.json(timetable)).catch(err => console.log(err));        
 });
 
 
