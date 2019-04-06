@@ -6,8 +6,12 @@ function _getTimeTable(callBack) {
     const db = new sqlite3.Database('../ValamisCinema.sqlite');
     let timeTable = [];
         
-        db.serialize(function () {            
-            const sql = "select id, time, movie, hall from Shows";
+    db.serialize(function () {            
+            const sql =
+                "select Shows.id as id, Shows.time as time, Shows.movie as movie, " +
+                "Halls.name as hall, Halls.id as hallId from Shows " +
+                "join Halls on Halls.id = Shows.hall " +
+                "order by Shows.id ";
             console.log('inside db serialize');
 
             let promisifiedDbAll = utils.promisify(db.all.bind(db));
@@ -16,13 +20,20 @@ function _getTimeTable(callBack) {
                 {
                     rows.forEach((row) => {
                         console.log(
-                            `date: ${row.time} movie: ${row.movie} hall: ${row.hall}`
+                            `date: ${row.time} movie: ${
+                                row.movie
+                            } hall: ${
+                                row.hall
+                            }   hallId: ${row.hallId}`
                         );
                         // "2019-01-01 18:00:00"
                         timeTable.push({
                             id: row.id,
-                            datetime: new Date(Date.parse(row.time)),
+                            datetime: new Date(
+                                Date.parse(row.time)
+                            ),
                             movie: row.movie,
+                            hallId: row.hallId,
                             hall: row.hall
                         });
                     }); 
@@ -31,10 +42,10 @@ function _getTimeTable(callBack) {
                 }
             ).catch(err => {
                 callBack(err, timeTable);});          
-            });             
+    });             
         
-        db.close();        
- };
+    db.close();        
+};
 
 const getTimeTable = utils.promisify(_getTimeTable.bind(this));
 

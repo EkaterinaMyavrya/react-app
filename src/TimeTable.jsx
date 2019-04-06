@@ -55,8 +55,11 @@ export class TimeTable extends React.Component {
                                     {item.movie}
                                 </span>
                                 <span className="movie-hall">
-                                    {item.hall}{" "}
-                                </span>{" "}
+                                    {item.hall}
+                                </span>
+                                <span className="movie-book">
+                                    <a className="go-to-book" href="./book" > Tickets </a>
+                                </span>
                             </div>
                         ))}
                 </div>
