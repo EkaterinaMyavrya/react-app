@@ -7,7 +7,7 @@ function _getTimeTable(callBack) {
     let timeTable = [];
         
         db.serialize(function () {            
-            const sql = "select time, movie, hall from Shows";
+            const sql = "select id, time, movie, hall from Shows";
             console.log('inside db serialize');
 
             let promisifiedDbAll = utils.promisify(db.all.bind(db));
@@ -18,10 +18,12 @@ function _getTimeTable(callBack) {
                         console.log(
                             `date: ${row.time} movie: ${row.movie} hall: ${row.hall}`
                         );
+                        // "2019-01-01 18:00:00"
                         timeTable.push({
-                        datetime: row.time,
-                        movie: row.movie,
-                        hall: row.hall
+                            id: row.id,
+                            datetime: new Date(Date.parse(row.time)),
+                            movie: row.movie,
+                            hall: row.hall
                         });
                     }); 
 

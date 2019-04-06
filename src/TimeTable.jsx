@@ -1,25 +1,68 @@
 import React from "react";
-import { createStore } from "redux";
+import store from "./store.js";
+import { addTimeTableRow } from "./actions.js";
 
 export class TimeTable extends React.Component {
+  
     constructor(props) {
         super(props);
-        this.props.store = [];
+        console.log("constructor called");
+        this.state = {
+            timeTableRows: []
+        };
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount called");
+        this.loadData();
+    }
+    
+
+    loadData() {
+        fetch('http://localhost:3000/timetable')
+            .then(response => response.json())
+            .then(parsedJson => {
+                store.dispatch(addTimeTableRow(parsedJson));
+                this.setState({ timeTableRows: parsedJson })
+            });
     }
 
     render(){
-        return(<div className="background">
-            <h2 className="logo">Valamis cinema</h2>
-            <div className="timeTable">
-            
-                {this.props.store.timeTableRows.map(item =>(
-                    <div className="timetable-row" key={item}>       
-                    item.datetime item.movie item.hall             
-                    </div>
-                ) )}
-                
+        console.log("render called");       
+        const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour12: "false",
+            hour: "numeric",
+            minute: "numeric"
+        };
+        return (
+            <div className="background">
+                <h2 className="logo">Valamis cinema</h2>
+                <div className="timeTable">
+                    {this.state &&
+                        this.state.timeTableRows &&
+                        this.state.timeTableRows.map(item => (
+                            <div
+                                className="timetable-row"
+                                key={item.id}
+                            >
+                                <span className="movie-time">
+                                    {new Date(Date.parse(item.datetime)).toLocaleDateString("en-US", options)}
+                                </span>
+                                <span className="movie-name">
+                                    {item.movie}
+                                </span>
+                                <span className="movie-hall">
+                                    {item.hall}{" "}
+                                </span>{" "}
+                            </div>
+                        ))}
+                </div>
             </div>
-        </div>)
+        );
     }
 };
+
 
