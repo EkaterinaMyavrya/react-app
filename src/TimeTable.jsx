@@ -1,7 +1,7 @@
 import React from "react";
 import store from "./store.js";
 import { addTimeTableRow } from "./actions.js";
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
 import Tickets from "./Tickets";
 
 export class TimeTable extends React.Component {
@@ -57,10 +57,10 @@ export class TimeTable extends React.Component {
                                 {item.hall}
                             </span>
                             <span className="movie-book">
-                            
-<Link to='/book' className="go-to-book">  Tickets       </Link>
-                            
-                            </span>
+                                <Link to={`/book/${item.id}`}>
+                                    Book tickets
+                                </Link>
+                            </span>                          
                         </div>
                     ))}
             </div>

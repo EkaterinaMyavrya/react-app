@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { TimeTable } from "./TimeTable.jsx";
 import { Tickets } from "./Tickets.jsx";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 
 "use strict";
 
@@ -26,6 +26,8 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/" exact component={TimeTable} />
                     <Route path="/book" exact component={Tickets} />
+                    <Route exact path="/book/:id" component={Tickets}
+                    />
                 </Switch>
             </div>
         </div>
