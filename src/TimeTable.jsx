@@ -1,6 +1,8 @@
 import React from "react";
 import store from "./store.js";
 import { addTimeTableRow } from "./actions.js";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import Tickets from "./Tickets";
 
 export class TimeTable extends React.Component {
   
@@ -38,34 +40,30 @@ export class TimeTable extends React.Component {
             minute: "numeric"
         };
         return (
-            <div className="background">
-                <h2 className="logo">Valamis cinema</h2>
-                <div className="timeTable">
-                    {this.state &&
-                        this.state.timeTableRows &&
-                        this.state.timeTableRows.map(item => (
-                            <div
-                                className="timetable-row"
-                                key={item.id}
-                            >
-                                <span className="movie-time">
-                                    {new Date(Date.parse(item.datetime)).toLocaleDateString("en-US", options)}
-                                </span>
-                                <span className="movie-name">
-                                    {item.movie}
-                                </span>
-                                <span className="movie-hall">
-                                    {item.hall}
-                                </span>
-                                <span className="movie-book">
-                                    <a className="go-to-book" href="./book" > Tickets </a>
-                                </span>
-                            </div>
-                        ))}
-                </div>
+            <div className="timeTable">
+                {this.state &&
+                    this.state.timeTableRows &&
+                    this.state.timeTableRows.map(item => (
+                        <div className="timetable-row" key={item.id}>
+                            <span className="movie-time">
+                                {new Date(
+                                    Date.parse(item.datetime)
+                                ).toLocaleDateString("en-US", options)}
+                            </span>
+                            <span className="movie-name">
+                                {item.movie}
+                            </span>
+                            <span className="movie-hall">
+                                {item.hall}
+                            </span>
+                            <span className="movie-book">
+                            
+<Link to='/book' className="go-to-book">  Tickets       </Link>
+                            
+                            </span>
+                        </div>
+                    ))}
             </div>
         );
     }
 };
-
-

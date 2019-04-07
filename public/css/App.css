@@ -6,8 +6,26 @@
 }
 
 .background{
-  width: 100%;
+  width: 100%; 
+}
 
+.navbar-list{
+    width: 700px;
+    margin: 10px auto;
+    list-style: none; 
+      height: 40px;
+       background-color: darkcyan;
+}
+
+.navbar-item{   
+    width: 100px;
+    padding: 10px;
+    display: inline-block;   
+}
+
+.navbar-link{
+       color: white;
+       text-decoration-style: none;       
 }
 
 .logo{

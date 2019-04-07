@@ -17,12 +17,15 @@ export class Tickets extends React.Component {
         console.log("render called");       
         
         return (
-            <div className="background">
-                <h2 className="logo">Valamis cinema</h2>
+            <div className="Tickets">
                 <h3> Tickets </h3>
+
+               
             </div>
         );
     }
 };
+/*
 
-
+<Route path={`${match.path}/:id`} component={Topic} /
+*/
