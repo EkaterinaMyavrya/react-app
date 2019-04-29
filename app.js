@@ -12,7 +12,10 @@ app.get('/timetable', function (req, res) {
     dbCreator.getTimeTable().then(timetable => res.json(timetable)).catch(err => console.log(err));        
 });
 
-
+app.get('/bookTickets/:movieId', function (req, res) {
+    var movieId = req.params.movieId;
+    dbCreator.getMovieChairs(movieId).then(movieChairs => res.json(movieChairs)).catch(err => console.log(err));
+});
 
 
 app.listen(3000, function () {

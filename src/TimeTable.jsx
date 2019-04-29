@@ -41,6 +41,7 @@ export class TimeTable extends React.Component {
         };
         return (
             <div className="timeTable">
+                <h3> Time Table </h3>
                 {this.state &&
                     this.state.timeTableRows &&
                     this.state.timeTableRows.map(item => (

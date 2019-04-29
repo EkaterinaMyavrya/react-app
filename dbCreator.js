@@ -2,32 +2,28 @@ const utils = require('./utils');
 const sqlite3 = require("sqlite3").verbose();
 
 function _getTimeTable(callBack) {    
-       
-    const db = new sqlite3.Database('../ValamisCinema.sqlite');
+    const db = _openDb();
     let timeTable = [];
-        
-    db.serialize(function () {            
-            const sql =
-                "select Shows.id as id, Shows.time as time, Shows.movie as movie, " +
+                 
+    const sql = "select Shows.id as id, Shows.time as time, Shows.movie as movie, " +
                 "Halls.name as hall, Halls.id as hallId from Shows " +
                 "join Halls on Halls.id = Shows.hall " +
                 "order by Shows.id ";
-            console.log('inside db serialize');
-
-            let promisifiedDbAll = utils.promisify(db.all.bind(db));
-            promisifiedDbAll(sql, [])
-            .then(rows => 
-                {
-                    rows.forEach((row) => {
-                        console.log(
+    
+    let promisifiedDbAll = utils.promisify(db.all.bind(db));
+    promisifiedDbAll(sql, [])
+        .then(rows => 
+            {
+                rows.forEach((row) => {
+                    console.log(
                             `date: ${row.time} movie: ${
                                 row.movie
                             } hall: ${
                                 row.hall
                             }   hallId: ${row.hallId}`
-                        );
+                    );
                         // "2019-01-01 18:00:00"
-                        timeTable.push({
+                    timeTable.push({
                             id: row.id,
                             datetime: new Date(
                                 Date.parse(row.time)
@@ -35,25 +31,81 @@ function _getTimeTable(callBack) {
                             movie: row.movie,
                             hallId: row.hallId,
                             hall: row.hall
-                        });
-                    }); 
+                    });
+                }); 
 
                 callBack(null, timeTable);
-                }
-            ).catch(err => {
-                callBack(err, timeTable);});          
-    });             
+            }
+        ).catch(err => {
+            callBack(err, timeTable);
+        });   
         
-    db.close();        
+    _closeDb(db);
 };
 
-const getTimeTable = utils.promisify(_getTimeTable.bind(this));
+
+function _getMovieChairs(movieId, callBack) {
+
+    const db = _openDb();
+    let movieChairs = [];
+
+    let idHall = 0;
+    let sql =`select hall from Shows
+            where Shows.id = ?`;
+
+    let promisifiedDbGet = utils.promisify(db.get.bind(db));
+    promisifiedDbGet(sql, [movieId])
+        .then(row => {             
+                idHall = row.hall;
+                console.log(idHall);
+
+                const db2 = _openDb();
+
+                let promisifiedDbAll = utils.promisify(db2.all.bind(db));
+                sql = `select Seats.id as seatId, Seats.row as row, Seats.seat as seat 
+                    from Seats
+                where Seats.id_hall = ?
+                order by Seats.id `;
+
+                console.log('inside promisifiedDbGet');
+
+                promisifiedDbAll(sql, [idHall])
+                    .then(rows => {
+                        rows.forEach((row) => {
+                            console.log(
+                                `seatId: ${
+                                row.seatId
+                                } row: ${
+                                row.row
+                                }   seat: ${row.seat}`
+                            );
+                            // "2019-01-01 18:00:00"
+                            movieChairs.push({
+                                id: row.seatId,
+                                row: row.row,
+                                seat: row.seat
+                            });
+                        });
+
+                        callBack(null, movieChairs);
+                    }
+                    ).catch(err => {
+                        callBack(err, movieChairs);
+                    });
+
+                _closeDb(db2);
+            })  
+            .catch(err => {
+                callBack(err, movieChairs);
+            });     
+
+    _closeDb(db);
+};
 
 function createDb(){
                     
-    let db = new sqlite3.Database('../ValamisCinema.sqlite');
-
-        db.serialize(function () {
+    const db = _openDb();
+    db.serialize(function () {
             db.run("drop table if exists Halls");
             db.run("drop table if exists Seats");
             db.run("drop table if exists States");
@@ -61,14 +113,13 @@ function createDb(){
             db.run("drop table if exists Booking");
 
             db.run("create table Halls (id int, name text)");
-            db.run("create table Seats (id int, id_hall int, row int, seat id)");
+            db.run("create table Seats (id int, id_hall int, row int, seat int)");
             db.run("create table States (id int, state text)");
             db.run("create table Shows (id int, time datetime, movie text, hall int)");
-            db.run("create table Booking (id int, show id, seat id, state id)");
+            db.run("create table Booking (id int, show int, seat int, state int)");
 
             let stmt = db.prepare("insert into Halls values (?, ?)");
-            for (let i = 1; i < 4; i++) {
-                console.log(`insert Hall${i}`);
+            for (let i = 1; i < 4; i++) {                
                 stmt.run(i, `Hall${i}`);
             }
 
@@ -78,10 +129,7 @@ function createDb(){
             let i = 1;
                 for (let hallId = 1; hallId < 4; hallId++) {
                     for (let row = 1; row < 4; row++) {
-                        for (let seat = 1; seat < 5; seat++) {
-                            console.log(
-                                `insert Seats ${i}, ${hallId}, ${row}, ${seat}`
-                            );
+                        for (let seat = 1; seat < 5; seat++) {                           
                             stmt.run(i, hallId, row, seat);
                             i++;
                         }
@@ -95,10 +143,7 @@ function createDb(){
             stmt.run(2, "booked");
             stmt.run(3, "payed");
             stmt.finalize();
-            console.log(
-                `inserted states`
-            );
-          
+                    
             stmt = db.prepare("insert into Shows values (?, ?, ?, ?)");
             stmt.run(1, '2019-01-01 18:00:00', "La La Land", "1");
             stmt.run(2, '2019-01-01 18:00:00', "The Hateful Eight", "2");
@@ -109,18 +154,31 @@ function createDb(){
             stmt.run(7, "2019-01-03 18:00:00", "La La Land", "3");
             stmt.run(8, "2019-01-03 18:00:00", "The Hateful Eight", "1");
             stmt.run(9, "2019-01-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
-            stmt.finalize();
-            console.log(
-                `inserted shows`
-            );
-
-          
+            stmt.finalize();              
+            
+        console.log(`database is created`);
         });
 
-    db.close();
-
+    _closeDb(db);
 }
+
+function _openDb(){
+    return new sqlite3.Database('../ValamisCinema.sqlite');
+}
+
+function _closeDb(db)
+{
+    db.close((err) => {
+        if (err) {
+            return console.error(err.message);
+        }
+    });
+}
+
+const getTimeTable = utils.promisify(_getTimeTable.bind(this));
+const getMovieChairs = utils.promisify(_getMovieChairs.bind(this));
+
 
 exports.createDb = () => createDb();
 exports.getTimeTable = () => getTimeTable();
-    
+exports.getMovieChairs = (movieId) => getMovieChairs(movieId);
