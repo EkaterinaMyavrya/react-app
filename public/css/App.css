@@ -67,8 +67,15 @@ h3{
 }
 .chair--state-free{
   background-image: url("../images/free-chair.png");
-  text-align: center;
-  
+  text-align: center;  
+}
+
+.chair--state-free:hover{ 
+  opacity: 0.6;
+}
+
+.chair--state-booked:hover{
+  opacity: 0.4;
 }
 
 .chair--state-busy{

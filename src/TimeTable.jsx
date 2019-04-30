@@ -2,7 +2,6 @@ import React from "react";
 import store from "./store.js";
 import { addTimeTableRow } from "./actions.js";
 import { Link, Route } from "react-router-dom";
-import Tickets from "./Tickets";
 
 export class TimeTable extends React.Component {
   

@@ -102,6 +102,90 @@ function _getMovieChairs(movieId, callBack) {
     _closeDb(db);
 };
 
+
+function _getMovieChairs(movieId, callBack) {
+
+    const db = _openDb();
+    let movieChairs = [];
+
+    let idHall = 0;
+    let sql =`select hall from Shows
+            where Shows.id = ?`;
+
+    let promisifiedDbGet = utils.promisify(db.get.bind(db));
+    promisifiedDbGet(sql, [movieId])
+        .then(row => {             
+                idHall = row.hall;
+                console.log(idHall);
+
+                const db2 = _openDb();
+
+                let promisifiedDbAll = utils.promisify(db2.all.bind(db2));
+                sql = `select Seats.id as seatId, Seats.row as row, Seats.seat as seat 
+                    from Seats
+                where Seats.id_hall = ?
+                order by Seats.id `;
+
+                console.log('inside promisifiedDbGet');
+
+                promisifiedDbAll(sql, [idHall])
+                    .then(rows => {
+                        rows.forEach((row) => {                          
+                            movieChairs.push({
+                                id: row.seatId,
+                                row: row.row,
+                                seat: row.seat,
+                                state: "free"
+                            });
+                        });
+                                    
+                        getBookedChairs(movieId).then(
+                            seatsIds =>
+                            {
+                                seatsIds.forEach(seatId =>
+                                {
+                                    movieChairs.find(chair => chair.id == seatId).state = "booked";     
+                                });
+                                
+                                callBack(null, movieChairs);
+                            }
+                        ).catch(err => callBack(err, movieChairs))                      
+                    }).catch(err => callBack(err, movieChairs));
+
+                _closeDb(db2);
+            })  
+            .catch(err => callBack(err, movieChairs));     
+
+    _closeDb(db);
+};
+
+
+function _getBookedChairs(movieId, callBack) {
+
+    const db = _openDb();
+    let bookedChairs = [];
+
+    let sql = `select seat from Booking
+            where show = ?`;
+
+    let promisifiedDbAll = utils.promisify(db.all.bind(db));
+          
+    promisifiedDbAll(sql, [movieId])
+                .then(rows => {
+                    rows.forEach((row) => {                       
+                        bookedChairs.push(row.seat);
+                    });
+               
+                    callBack(null, bookedChairs);
+                }
+                ).catch(err => {
+                    callBack(err, bookedChairs);
+                });
+      
+
+    _closeDb(db);
+};
+
 function createDb(){
                     
     const db = _openDb();
@@ -113,10 +197,9 @@ function createDb(){
             db.run("drop table if exists Booking");
 
             db.run("create table Halls (id int, name text)");
-            db.run("create table Seats (id int, id_hall int, row int, seat int)");
-            db.run("create table States (id int, state text)");
+            db.run("create table Seats (id int, id_hall int, row int, seat int)");         
             db.run("create table Shows (id int, time datetime, movie text, hall int)");
-            db.run("create table Booking (id int, show int, seat int, state int)");
+            db.run("create table Booking (id int, show int, seat int)");
 
             let stmt = db.prepare("insert into Halls values (?, ?)");
             for (let i = 1; i < 4; i++) {                
@@ -137,12 +220,12 @@ function createDb(){
                 }
             
             stmt.finalize();
-
+/*
             stmt = db.prepare("insert into States values (?, ?)");
             stmt.run(1, "free");
             stmt.run(2, "booked");
             stmt.run(3, "payed");
-            stmt.finalize();
+            stmt.finalize();*/
                     
             stmt = db.prepare("insert into Shows values (?, ?, ?, ?)");
             stmt.run(1, '2019-01-01 18:00:00', "La La Land", "1");
@@ -177,8 +260,9 @@ function _closeDb(db)
 
 const getTimeTable = utils.promisify(_getTimeTable.bind(this));
 const getMovieChairs = utils.promisify(_getMovieChairs.bind(this));
-
+const getBookedChairs = utils.promisify(_getBookedChairs.bind(this));
 
 exports.createDb = () => createDb();
 exports.getTimeTable = () => getTimeTable();
 exports.getMovieChairs = (movieId) => getMovieChairs(movieId);
+exports.getBookedChairs = (movieId) => getBookedChairs(movieId);

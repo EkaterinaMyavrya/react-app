@@ -1,7 +1,7 @@
 import React from "react";
 import store from "./store.js";
 import { addMovieChairRow } from "./actions.js";
-
+import {Chair} from "./Chair";
 
 function groupByRow(list) {
     
@@ -16,15 +16,14 @@ function groupByRow(list) {
 
 export class Tickets extends React.Component {
     constructor(props) {
-        super(props);
-        console.log("tickets constructor called");
-            this.state = {
+        super(props);       
+        this.state = {
                 movieChairsRows: []
-            };
+       };
+       this.bookChairs = this.bookChairs.bind(this);
     }
 
-    componentDidMount() {
-        console.log("tickets componentDidMount called");
+    componentDidMount() {       
         this.loadData();
     }
 
@@ -41,6 +40,23 @@ export class Tickets extends React.Component {
         });
     }
 
+    bookChairs() {
+      const currentState = store.getState();
+      if (currentState && currentState.bookedChairs)
+      {
+          if (this.state && this.state.movieChairsRows) {
+              let movieChairsRows = this.state.movieChairsRows;
+              movieChairsRows.forEach(chair => {
+                  if(currentState.bookedChairs.includes(chair.id)){
+                        chair.state = "booked";
+                  };
+                })
+
+              this.setState({ movieChairsRows: movieChairsRows });
+          }
+      }
+    }
+
     render() {
                console.log("tickets render called");
                var groupedByRowResult = [];
@@ -52,16 +68,18 @@ export class Tickets extends React.Component {
                    <div className="tickets">
                        <h3> Tickets </h3>
                        <div className="chairs"> 
+                        
                            {groupedByRowResult.map(arrayItem => (
-                               <div className="seat-row" key={arrayItem[0].row}>                                
+                               <div className="seat-row" key={arrayItem[0].row}>   
+                                   <h4> {arrayItem[0].row} row: </h4>                             
                                    {arrayItem.map(rowSeat => (
-                                       <span className="chair chair--state-free" key={rowSeat.id}>
-                                           {console.log(rowSeat.id)}
-                                           {rowSeat.seat}
-                                       </span>
+                                       <Chair id={rowSeat.id} seat={rowSeat.seat} seatState = {rowSeat.state}/>                                        
                                    ))}
                                 </div>
                                ))}
+                        </div>
+                        <div className="order">
+                                <button onClick={this.bookChairs}> Book </button>
                         </div>
                        </div>
                    
