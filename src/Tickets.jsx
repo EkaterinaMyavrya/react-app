@@ -54,6 +54,16 @@ export class Tickets extends React.Component {
 
               this.setState({ movieChairsRows: movieChairsRows });
           }
+
+          fetch(`http://localhost:3000/bookTickets`,
+              {
+                  headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                  },
+                  method: "POST",
+                  body: JSON.stringify({ movieId: this.props.match.params.id, seatIds: currentState.bookedChairs})
+              });
       }
     }
 

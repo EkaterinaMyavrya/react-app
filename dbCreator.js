@@ -160,6 +160,29 @@ function _getMovieChairs(movieId, callBack) {
 };
 
 
+function _bookChairs(movieId, seatIds, callBack) {
+    try{
+        const db = _openDb();   
+        console.log(`inside book tickets for movie ${movieId}`);
+        if (seatIds && Array.isArray(seatIds)){
+            stmt = db.prepare("insert into Booking (show, seat) values (?,?)");
+            seatIds.forEach((seatId) => {
+                console.log(`inside book tickets for movie ${seatId}`);
+                stmt.run(movieId, seatId);
+                }
+            );
+            stmt.finalize();
+        }
+        _closeDb(db);
+    }
+    catch(err){
+        callBack(err, null);
+    }
+
+    callBack(null, "success");
+};
+
+
 function _getBookedChairs(movieId, callBack) {
 
     const db = _openDb();
@@ -190,57 +213,49 @@ function createDb(){
                     
     const db = _openDb();
     db.serialize(function () {
-            db.run("drop table if exists Halls");
-            db.run("drop table if exists Seats");
-            db.run("drop table if exists States");
-            db.run("drop table if exists Shows");
-            db.run("drop table if exists Booking");
+        db.run("drop table if exists Halls");
+        db.run("drop table if exists Seats");
+        db.run("drop table if exists States");
+        db.run("drop table if exists Shows");
+        db.run("drop table if exists Booking");
 
-            db.run("create table Halls (id int, name text)");
-            db.run("create table Seats (id int, id_hall int, row int, seat int)");         
-            db.run("create table Shows (id int, time datetime, movie text, hall int)");
-            db.run("create table Booking (id int, show int, seat int)");
+        db.run("create table Halls (id INTEGER PRIMARY KEY AUTOINCREMENT, name text)");
+        db.run("create table Seats (id INTEGER PRIMARY KEY AUTOINCREMENT, id_hall int, row int, seat int)");         
+        db.run("create table Shows (id INTEGER PRIMARY KEY AUTOINCREMENT, time datetime, movie text, hall int)");
+        db.run("create table Booking (id INTEGER PRIMARY KEY AUTOINCREMENT, show int, seat int)");
 
-            let stmt = db.prepare("insert into Halls values (?, ?)");
-            for (let i = 1; i < 4; i++) {                
-                stmt.run(i, `Hall${i}`);
-            }
+        let stmt = db.prepare("insert into Halls (name) values (?) ");
+        for (let i = 1; i < 4; i++) {                
+                stmt.run(`Hall${i}`);
+        }
 
-            stmt.finalize();
+        stmt.finalize();
 
-            stmt = db.prepare("insert into Seats values (?, ?, ?, ?)");
-            let i = 1;
-                for (let hallId = 1; hallId < 4; hallId++) {
-                    for (let row = 1; row < 4; row++) {
-                        for (let seat = 1; seat < 5; seat++) {                           
-                            stmt.run(i, hallId, row, seat);
-                            i++;
-                        }
-                    }
+        stmt = db.prepare("insert into Seats (id_hall, row, seat) values (?, ?, ?) ");           
+        for (let hallId = 1; hallId < 4; hallId++) {
+            for (let row = 1; row < 4; row++) {
+                for (let seat = 1; seat < 5; seat++) {                           
+                    stmt.run(hallId, row, seat);                           
                 }
+            }
+        }
             
-            stmt.finalize();
-/*
-            stmt = db.prepare("insert into States values (?, ?)");
-            stmt.run(1, "free");
-            stmt.run(2, "booked");
-            stmt.run(3, "payed");
-            stmt.finalize();*/
+        stmt.finalize();
                     
-            stmt = db.prepare("insert into Shows values (?, ?, ?, ?)");
-            stmt.run(1, '2019-01-01 18:00:00', "La La Land", "1");
-            stmt.run(2, '2019-01-01 18:00:00', "The Hateful Eight", "2");
-            stmt.run(3, "2019-01-01 18:00:00", "Harry Potter and the Chamber of Secrets", "3");
-            stmt.run(4, "2019-01-02 18:00:00", "La La Land", "2");
-            stmt.run(5, "2019-01-02 18:00:00", "The Hateful Eight", "3");
-            stmt.run(6, "2019-01-02 18:00:00", "Harry Potter and the Chamber of Secrets", "1");
-            stmt.run(7, "2019-01-03 18:00:00", "La La Land", "3");
-            stmt.run(8, "2019-01-03 18:00:00", "The Hateful Eight", "1");
-            stmt.run(9, "2019-01-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
-            stmt.finalize();              
+        stmt = db.prepare("insert into Shows (time, movie, hall) values (?, ?, ?) ");
+        stmt.run('2019-01-01 18:00:00', "La La Land", "1");
+        stmt.run('2019-01-01 18:00:00', "The Hateful Eight", "2");
+        stmt.run("2019-01-01 18:00:00", "Harry Potter and the Chamber of Secrets", "3");
+        stmt.run("2019-01-02 18:00:00", "La La Land", "2");
+        stmt.run("2019-01-02 18:00:00", "The Hateful Eight", "3");
+        stmt.run("2019-01-02 18:00:00", "Harry Potter and the Chamber of Secrets", "1");
+        stmt.run("2019-01-03 18:00:00", "La La Land", "3");
+        stmt.run("2019-01-03 18:00:00", "The Hateful Eight", "1");
+        stmt.run("2019-01-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
+        stmt.finalize();              
             
         console.log(`database is created`);
-        });
+    });
 
     _closeDb(db);
 }
@@ -249,8 +264,7 @@ function _openDb(){
     return new sqlite3.Database('../ValamisCinema.sqlite');
 }
 
-function _closeDb(db)
-{
+function _closeDb(db){
     db.close((err) => {
         if (err) {
             return console.error(err.message);
@@ -261,8 +275,10 @@ function _closeDb(db)
 const getTimeTable = utils.promisify(_getTimeTable.bind(this));
 const getMovieChairs = utils.promisify(_getMovieChairs.bind(this));
 const getBookedChairs = utils.promisify(_getBookedChairs.bind(this));
+const bookChairs = utils.promisify(_bookChairs.bind(this));
 
 exports.createDb = () => createDb();
 exports.getTimeTable = () => getTimeTable();
 exports.getMovieChairs = (movieId) => getMovieChairs(movieId);
 exports.getBookedChairs = (movieId) => getBookedChairs(movieId);
+exports.bookChairs = (movieId, seatIds) => bookChairs(movieId, seatIds);
