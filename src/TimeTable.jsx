@@ -43,13 +43,13 @@ export class TimeTable extends React.Component {
 
     render(){
         console.log("render called");       
-        const options = {
-            year: "numeric",
+        const options = {          
             month: "long",
             day: "numeric",
             hour12: "false",
             hour: "numeric",
-            minute: "numeric"
+            minute: "numeric",
+            weekday: "short"
         };
         return (
             <Container text style={{ marginTop: '2em' }}>        

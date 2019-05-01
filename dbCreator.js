@@ -243,15 +243,15 @@ function createDb(){
         stmt.finalize();
                     
         stmt = db.prepare("insert into Shows (time, movie, hall) values (?, ?, ?) ");
-        stmt.run('2019-01-01 18:00:00', "La La Land", "1");
-        stmt.run('2019-01-01 18:00:00', "The Hateful Eight", "2");
-        stmt.run("2019-01-01 18:00:00", "Harry Potter and the Chamber of Secrets", "3");
-        stmt.run("2019-01-02 18:00:00", "La La Land", "2");
-        stmt.run("2019-01-02 18:00:00", "The Hateful Eight", "3");
-        stmt.run("2019-01-02 18:00:00", "Harry Potter and the Chamber of Secrets", "1");
-        stmt.run("2019-01-03 18:00:00", "La La Land", "3");
-        stmt.run("2019-01-03 18:00:00", "The Hateful Eight", "1");
-        stmt.run("2019-01-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
+        stmt.run('2019-05-01 18:00:00', "La La Land", "1");
+        stmt.run('2019-05-01 18:00:00', "The Hateful Eight", "2");
+        stmt.run("2019-05-01 18:00:00", "Harry Potter and the Chamber of Secrets", "3");
+        stmt.run("2019-05-02 18:00:00", "La La Land", "2");
+        stmt.run("2019-05-02 18:00:00", "The Hateful Eight", "3");
+        stmt.run("2019-05-02 18:00:00", "Harry Potter and the Chamber of Secrets", "1");
+        stmt.run("2019-05-03 18:00:00", "La La Land", "3");
+        stmt.run("2019-05-03 18:00:00", "The Hateful Eight", "1");
+        stmt.run("2019-05-03 18:00:00", "Harry Potter and the Chamber of Secrets", "2");
         stmt.finalize();              
             
         console.log(`database is created`);

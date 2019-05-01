@@ -1,4 +1,4 @@
-import {  SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR } from "./action-types.js";
+import { SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR, CLEAR_BOOKED_CHAIRS } from "./action-types.js";
 
 const initialState = {
     movieName: '',
@@ -28,6 +28,12 @@ function rootReducer(state = initialState, action) {
             bookedChairs: state.bookedChairs.filter((val, index, arr) => val != action.payload)
         });
     }
+
+    if (action.type == CLEAR_BOOKED_CHAIRS) {
+        return Object.assign({}, state, {
+            bookedChairs: []});      
+    }
+    
     return state;
 };
 

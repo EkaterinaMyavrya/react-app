@@ -22,6 +22,9 @@ app.get('/bookTickets/:movieId', function (req, res) {
 
 app.post('/bookTickets', function(req, res){
     console.log(`inside book tickets for movie ${req.body.movieId}`);
+    // todo: uncomment if you would like to see error
+    //res.status(400);
+    //res.send('error happens');
     dbCreator.bookChairs(req.body.movieId, req.body.seatIds).then(res.send("success")).catch(err => console.log(err));
 });
 
