@@ -1,73 +1,17 @@
-*{
-  margin: 0;
-  padding: 0;
+*{  
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
-}
-
-.background{
-  width: 100%; 
-}
-
-.navbar-list{
-    width: 700px;
-    margin: 10px auto;
-    list-style: none; 
-    height: 40px;
-    background-color: darkcyan;
-}
-
-.navbar-item{   
-    width: 100px;
-    padding: 10px;
-    display: inline-block;   
-}
-
-.navbar-link{
-       color: white;
-       text-decoration-style: none;       
-}
-
-.logo{
-  font-size: 40px;
-  font-weight: bold;
-  color: green;
-  margin: 10px auto;
-  padding: 10px;
-  width: 700px;
-}
-
-.chairs {
-  display: block;
-}
-
-.tickets, .timeTable{
-  width: 700px;
-  margin: 10px auto;  
-}
-
-h3{
-  font-size: 20px;
-  color:  darkcyan;
-}
-
-.seat-row{
-  width: 700px;
-  height: 50px;
-  margin: 20px auto;
-  padding: 10px;
-  background-color: azure;
 }
 
 .chair{
   width: 30px;
   height: 30px;
-  margin-left: 10px;
   display: inline-block;
+  text-align: center;  
 }
+
 .chair--state-free{
   background-image: url("../images/free-chair.png");
-  text-align: center;  
 }
 
 .chair--state-free:hover{ 
@@ -79,47 +23,9 @@ h3{
 }
 
 .chair--state-busy{
-  background-image: url("../images/busy-chair.png");
-  text-align: center;
+  background-image: url("../images/busy-chair.png"); 
 }
 
 .chair--state-booked{
-  background-image: url("../images/booked-chair.png");
-  text-align: center;
-}
-
-.timetable-row{
-  width: 700px;
-  height: 50px;
-  margin: 10px auto;
-  padding: 10px;
-  background-color: azure;
-  overflow: hidden;
-}
-
-.movie-name, .movie-hall, .movie-time, .movie-book{
-  height: 40px;  
-  margin: 10px 10px;
-  overflow: hidden;
-}
-
-.movie-name {
-  width: 300px;  
-  float: left;  
-}
-
-.movie-hall{
-  width: 50px;
-  float: left;
-}
-
-.movie-time{
-  width: 150px;
-  float: left;
-}
-
-.movie-book {
-  width: 70px;
-  float: right;
-  color: blue;
+  background-image: url("../images/booked-chair.png");  
 }

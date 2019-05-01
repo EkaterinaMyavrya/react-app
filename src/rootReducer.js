@@ -1,22 +1,22 @@
-import { ADD_TIMETABLEROW, ADD_MOVIECHAIRROW, BOOK_CHAIR, UNBOOK_CHAIR } from "./action-types.js";
+import {  SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR } from "./action-types.js";
 
 const initialState = {
-    timeTableRows: [],
-    movieChairsRows: [],
+    movieName: '',
+    movieTime: '',
+    movieHall: '',
     bookedChairs: []
 };
 
 function rootReducer(state = initialState, action) {
-    if (action.type === ADD_TIMETABLEROW) {       
+    if(action.type == SAVE_MOVIE)
+    {
         return Object.assign({}, state, {
-            timeTableRows: state.timeTableRows.concat(action.payload)
+            movieName: action.payload.movie, 
+            movieTime: action.payload.datetime,
+            movieHall: action.payload.hall
         });
-    }    
-    if (action.type === ADD_MOVIECHAIRROW) {
-        return Object.assign({}, state, {
-            movieChairsRows: state.movieChairsRows.concat(action.payload)
-        });
-    }    
+    }
+
     if(action.type == BOOK_CHAIR){
         return Object.assign({}, state, {
             bookedChairs: state.bookedChairs.concat(action.payload)

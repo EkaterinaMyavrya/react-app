@@ -1,4 +1,3 @@
-export const ADD_TIMETABLEROW = "ADD_TIMETABLEROW";
-export const ADD_MOVIECHAIRROW = "ADD_MOVIECHAIRROW";
+export const SAVE_MOVIE = "SAVE_MOVIE";
 export const BOOK_CHAIR = "BOOK_CHAIR"; 
 export const UNBOOK_CHAIR = "UNBOOK_CHAIR";

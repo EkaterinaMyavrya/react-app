@@ -1,7 +1,12 @@
 import React from "react";
 import store from "./store.js";
-import { addTimeTableRow } from "./actions.js";
+import { saveMovie } from "./actions.js";
 import { Link, Route } from "react-router-dom";
+import {   
+    Container,
+    Table,
+    Header
+} from 'semantic-ui-react';
 
 export class TimeTable extends React.Component {
   
@@ -11,6 +16,8 @@ export class TimeTable extends React.Component {
         this.state = {
             timeTableRows: []
         };
+
+        this.saveMovieToStore = this.saveMovieToStore.bind(this);
     }
 
     componentDidMount() {
@@ -22,10 +29,16 @@ export class TimeTable extends React.Component {
     loadData() {
         fetch('http://localhost:3000/timetable')
             .then(response => response.json())
-            .then(parsedJson => {
-                store.dispatch(addTimeTableRow(parsedJson));
+            .then(parsedJson => {          
                 this.setState({ timeTableRows: parsedJson })
             });
+    }
+
+    saveMovieToStore(movie, e){
+        if(movie)
+        {
+            store.dispatch(saveMovie(movie));
+        }
     }
 
     render(){
@@ -39,31 +52,47 @@ export class TimeTable extends React.Component {
             minute: "numeric"
         };
         return (
-            <div className="timeTable">
-                <h3> Time Table </h3>
+            <Container text style={{ marginTop: '2em' }}>        
+                <Header as='h3' textAlign='center' content='Time Table' />
+                <Container>
+                    <Table celled>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Time</Table.HeaderCell>
+                                <Table.HeaderCell>Movie</Table.HeaderCell>
+                                <Table.HeaderCell>Hall</Table.HeaderCell>
+                                <Table.HeaderCell>Link</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                         
                 {this.state &&
                     this.state.timeTableRows &&
                     this.state.timeTableRows.map(item => (
-                        <div className="timetable-row" key={item.id}>
-                            <span className="movie-time">
+                     
+                        <Table.Row key={item.id}>
+                            <Table.Cell>
                                 {new Date(
                                     Date.parse(item.datetime)
                                 ).toLocaleDateString("en-US", options)}
-                            </span>
-                            <span className="movie-name">
+                                </Table.Cell>
+                            <Table.Cell>
                                 {item.movie}
-                            </span>
-                            <span className="movie-hall">
+                                </Table.Cell>
+                            <Table.Cell>
                                 {item.hall}
-                            </span>
-                            <span className="movie-book">
-                                <Link to={`/book/${item.id}`}>
+                                </Table.Cell>
+                            <Table.Cell>
+                                <Link to={`/book/${item.id}`} onClick={(e) => this.saveMovieToStore(item, e)}>
                                     Book tickets
                                 </Link>
-                            </span>                          
-                        </div>
+                            </Table.Cell>                       
+                         </Table.Row>
                     ))}
-            </div>
+                    </Table.Body>
+                    </Table>
+                </Container>
+            </Container>
         );
     }
 };

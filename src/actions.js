@@ -1,11 +1,7 @@
-import { ADD_TIMETABLEROW, ADD_MOVIECHAIRROW, BOOK_CHAIR, UNBOOK_CHAIR} from "./action-types.js"
+import { SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR} from "./action-types.js"
 
-export function addTimeTableRow(payload) {
-    return { type: ADD_TIMETABLEROW, payload };
-};
-
-export function addMovieChairRow(payload) {
-    return { type: ADD_MOVIECHAIRROW, payload };
+export function saveMovie(payload) {
+    return { type: SAVE_MOVIE, payload };
 };
 
 

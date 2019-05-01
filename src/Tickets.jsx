@@ -2,10 +2,10 @@ import React from "react";
 import store from "./store.js";
 import { addMovieChairRow } from "./actions.js";
 import {Chair} from "./Chair";
+import { Button, Header, Grid, Container } from 'semantic-ui-react'
 
-function groupByRow(list) {
-    
 
+function groupByRow(list) {  
     const result = list.reduce(function (res, item) {
         res[item.row] = res[item.row] || [];
         res[item.row].push(item);
@@ -20,7 +20,9 @@ export class Tickets extends React.Component {
         this.state = {
                 movieChairsRows: []
        };
+
        this.bookChairs = this.bookChairs.bind(this);
+       this.getMovieName = this.getMovieName.bind(this);
     }
 
     componentDidMount() {       
@@ -34,8 +36,7 @@ export class Tickets extends React.Component {
             }`
         )
         .then(response => response.json())
-        .then(parsedJson => {
-                store.dispatch(addMovieChairRow(parsedJson));
+        .then(parsedJson => {               
                 this.setState({ movieChairsRows: parsedJson });
         });
     }
@@ -67,32 +68,81 @@ export class Tickets extends React.Component {
       }
     }
 
-    render() {
-               console.log("tickets render called");
+    getMovieName(){
+        const currentState = store.getState();
+        if (currentState && currentState.movieName) {
+            return currentState.movieName;
+        }
+
+        return '';
+    }
+
+    getMovieTime() {
+        const currentState = store.getState();
+        if (currentState && currentState.movieName) {
+            return currentState.movieTime;
+        }
+
+        return '';
+    }
+
+    getMovieHall() {
+        const currentState = store.getState();
+        if (currentState && currentState.movieHall) {
+            return currentState.movieHall;
+        }
+
+        return '';
+    }
+
+    render() {              
                var groupedByRowResult = [];
                if (this.state && this.state.movieChairsRows){
                    groupedByRowResult = groupByRow(this.state.movieChairsRows);
                }
 
+        const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour12: "false",
+            hour: "numeric",
+            minute: "numeric"
+        };
+
+        var date = 
+            new Date(
+                Date.parse(this.getMovieTime())
+            ).toLocaleDateString("en-US", options);
+        
                return (
-                   <div className="tickets">
-                       <h3> Tickets </h3>
-                       <div className="chairs"> 
-                        
+                   <Container text style={{ marginTop: '2em' }}>
+                       <Header as='h3' textAlign='center' content={`Select chairs and book them:`} />
+                       <Header as='h4' textAlign='left' content={`Movie: ${this.getMovieName()}`} />
+                       <Header as='h4' textAlign='left' content={`Time: ${date}`} />
+                       <Header as='h4' textAlign='left' content={`Hall: ${this.getMovieHall()}`} />
+
+                       <Container style={{ marginTop: '2em' }}>
+                           <Grid>                                    
                            {groupedByRowResult.map(arrayItem => (
-                               <div className="seat-row" key={arrayItem[0].row}>   
-                                   <h4> {arrayItem[0].row} row: </h4>                             
+                               <Grid.Row key={arrayItem[0].row}>
+                                   <Grid.Column width="2">   
+                                    {arrayItem[0].row} row 
+                                    </Grid.Column>                            
                                    {arrayItem.map(rowSeat => (
-                                       <Chair id={rowSeat.id} seat={rowSeat.seat} seatState = {rowSeat.state}/>                                        
+                                       <Grid.Column>
+                                           <Chair id={rowSeat.id} seat={rowSeat.seat} seatState = {rowSeat.state}/>                                        
+                                       </Grid.Column>
                                    ))}
-                                </div>
+                              </Grid.Row> 
                                ))}
-                        </div>
-                        <div className="order">
-                                <button onClick={this.bookChairs}> Book </button>
-                        </div>
-                       </div>
-                   
+                       
+                       </Grid>
+                       </Container>
+                       <Container style={{ marginTop: '2em' }} textAlign="center">                      
+                           <Button onClick={this.bookChairs}>Book</Button>
+                       </Container>
+                    </Container>                   
                );
-    }         
+      }
 };
