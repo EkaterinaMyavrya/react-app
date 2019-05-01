@@ -2,7 +2,7 @@ import React from "react";
 import store from "./store.js";
 import { clearBookedChairs } from "./actions.js";
 import {Chair} from "./Chair";
-import { Button, Header, Grid, Container, Message } from 'semantic-ui-react'
+import { Button, Header, Grid, Container, Message, Divider } from 'semantic-ui-react'
 
 
 function groupByRow(list) {  
@@ -36,10 +36,16 @@ export class Tickets extends React.Component {
             this.props.match.params.id
             }`
         )
-        .then(response => response.json())
+        .then(response =>{
+            if (response.ok) { return response.json();}
+            throw new Error("Server returned error.");
+        })
         .then(parsedJson => {               
                 this.setState({ movieChairsRows: parsedJson });
-        });
+        }).catch (err => {
+                console.log(err);
+                this.setState({ error: err.message });
+            });
     }
 
     bookChairs() {
@@ -147,18 +153,24 @@ export class Tickets extends React.Component {
                            </Grid>
                        </Container>
                         
-                        <Container style={{ marginTop: '2em' }}>
+                        <Container style={{ marginTop: '2em' }} textAlign="center">                         
+                            Screen
+                            <Divider />
                            <Grid>                                    
                            {groupedByRowResult.map(arrayItem => (
                                <Grid.Row key={arrayItem[0].row}>
-                                   <Grid.Column width="2">   
-                                    {arrayItem[0].row} row 
+                                   <Grid.Column width="3" textAlign="right">   
+                                    Row {arrayItem[0].row} 
                                     </Grid.Column>                            
                                    {arrayItem.map(rowSeat => (
                                        <Grid.Column key={rowSeat.id}>
                                            <Chair id={rowSeat.id} seat={rowSeat.seat} seatState = {rowSeat.state}/>                                        
                                        </Grid.Column>
                                    ))}
+
+                                   <Grid.Column width="3" textAlign="left">
+                                      Row {arrayItem[0].row} 
+                                    </Grid.Column>                   
                               </Grid.Row> 
                                ))}
                        

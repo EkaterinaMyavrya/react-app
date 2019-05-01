@@ -16,6 +16,5 @@ function promisify(fnToPromisify){
 };
 
 
-
 exports.promisify = (fnToPromisify) => promisify(fnToPromisify);
 

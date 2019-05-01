@@ -5,14 +5,14 @@ import { Link, Route } from "react-router-dom";
 import {   
     Container,
     Table,
-    Header
+    Header,
+    Message
 } from 'semantic-ui-react';
 
 export class TimeTable extends React.Component {
   
     constructor(props) {
         super(props);
-        console.log("constructor called");
         this.state = {
             timeTableRows: []
         };
@@ -21,16 +21,25 @@ export class TimeTable extends React.Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount called");
         this.loadData();
     }
     
 
     loadData() {
         fetch('http://localhost:3000/timetable')
-            .then(response => response.json())
+            .then(response =>
+                    {
+                        if (response.ok) {
+                            return  response.json();
+                        }
+         
+                throw new Error("Server returned error.");
+            })
             .then(parsedJson => {          
                 this.setState({ timeTableRows: parsedJson })
+            }).catch(err => {
+                console.log(err);
+                this.setState({ error: err.message });
             });
     }
 
@@ -42,7 +51,6 @@ export class TimeTable extends React.Component {
     }
 
     render(){
-        console.log("render called");       
         const options = {          
             month: "long",
             day: "numeric",
@@ -91,6 +99,14 @@ export class TimeTable extends React.Component {
                     ))}
                     </Table.Body>
                     </Table>
+                </Container>
+                <Container style={{ marginTop: '2em' }} textAlign="center">
+                    {this.state && this.state.error &&
+                        <Message negative>
+                            <Message.Header>We're sorry we can't show timetable</Message.Header>
+                            <p>{this.state.error} Try again to get timetable.</p>
+                        </Message>
+                    }
                 </Container>
             </Container>
         );
