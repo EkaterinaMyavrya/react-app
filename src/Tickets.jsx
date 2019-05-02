@@ -1,7 +1,7 @@
 import React from "react";
-import store from "./store.js";
-import { clearBookedChairs } from "./actions.js";
-import {Chair} from "./Chair";
+import store from "./reduxStore/store.js";
+import { clearBookedChairs } from "./reduxStore/actions.js";
+import { Chair } from "./Chair";
 import { Button, Header, Grid, Container, Message, Divider } from 'semantic-ui-react'
 
 

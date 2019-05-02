@@ -1,6 +1,6 @@
 import React from "react";
-import store from "./store.js";
-import { bookChair, unbookChair } from "./actions.js";
+import store from "./reduxStore/store.js";
+import { bookChair, unbookChair } from "./reduxStore/actions.js";
 
 export class Chair extends React.Component {
     constructor(props) {

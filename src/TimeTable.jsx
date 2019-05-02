@@ -1,6 +1,6 @@
 import React from "react";
-import store from "./store.js";
-import { saveMovie } from "./actions.js";
+import store from "./reduxStore/store.js";
+import { saveMovie } from "./reduxStore/actions.js";
 import { Link, Route } from "react-router-dom";
 import {   
     Container,

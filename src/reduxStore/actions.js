@@ -1,4 +1,4 @@
-import { SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR, CLEAR_BOOKED_CHAIRS} from "./action-types.js"
+import { SAVE_MOVIE, BOOK_CHAIR, UNBOOK_CHAIR, CLEAR_BOOKED_CHAIRS} from "./actionTypes.js"
 
 export function saveMovie(payload) {
     return { type: SAVE_MOVIE, payload };

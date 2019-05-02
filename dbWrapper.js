@@ -19,7 +19,7 @@ function _wrapDbActions(dbActions) {
 
 
 function _openDb() {
-    return new sqlite3.Database('../ValamisCinema.sqlite');
+    return new sqlite3.Database('./ValamisCinema.sqlite');
 }
 
 function _closeDb(db) {
