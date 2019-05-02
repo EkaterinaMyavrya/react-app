@@ -3,14 +3,13 @@ import ReactDOM from "react-dom";
 import { App } from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 
-import 'semantic-ui-css/semantic.min.css';
+import "semantic-ui-css/semantic.min.css";
 
-"use strict";
-
+("use strict");
 
 ReactDOM.render(
-    <BrowserRouter> 
-       <App/>         
+    <BrowserRouter>
+        <App />
     </BrowserRouter>,
     document.getElementById("root")
 );

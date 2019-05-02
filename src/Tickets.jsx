@@ -52,7 +52,7 @@ export class Tickets extends React.Component {
       const currentState = store.getState();
       if (currentState && currentState.bookedChairs)
       {
-          if (this.state && this.state.movieChairsRows) {
+          if (this.state.movieChairsRows) {
               let movieChairsRows = this.state.movieChairsRows;
               movieChairsRows.forEach(chair => {
                   if(currentState.bookedChairs.includes(chair.id)){
@@ -99,7 +99,7 @@ export class Tickets extends React.Component {
 
     getMovieTime() {
         const currentState = store.getState();
-        if (currentState && currentState.movieName) {
+        if (currentState.movieName) {
             return currentState.movieTime;
         }
 
@@ -108,7 +108,7 @@ export class Tickets extends React.Component {
 
     getMovieHall() {
         const currentState = store.getState();
-        if (currentState && currentState.movieHall) {
+        if (currentState.movieHall) {
             return currentState.movieHall;
         }
 

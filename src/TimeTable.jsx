@@ -61,8 +61,11 @@ export class TimeTable extends React.Component {
         };
         return (
             <Container text style={{ marginTop: '2em' }}>        
+
                 <Header as='h3' textAlign='center' content='Time Table' />
+
                 <Container>
+
                     <Table celled>
                         <Table.Header>
                             <Table.Row>
@@ -72,42 +75,43 @@ export class TimeTable extends React.Component {
                                 <Table.HeaderCell>Link</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
+
                         <Table.Body>
                          
-                {this.state &&
-                    this.state.timeTableRows &&
-                    this.state.timeTableRows.map(item => (
-                     
-                        <Table.Row key={item.id}>
-                            <Table.Cell>
-                                {new Date(
-                                    Date.parse(item.datetime)
-                                ).toLocaleDateString("en-US", options)}
-                                </Table.Cell>
-                            <Table.Cell>
-                                {item.movie}
-                                </Table.Cell>
-                            <Table.Cell>
-                                {item.hall}
-                                </Table.Cell>
-                            <Table.Cell>
-                                <Link to={`/book/${item.id}`} onClick={(e) => this.saveMovieToStore(item, e)}>
-                                    Book tickets
-                                </Link>
-                            </Table.Cell>                       
-                         </Table.Row>
-                    ))}
-                    </Table.Body>
+                        {this.state.timeTableRows.map(item => (                     
+                            <Table.Row key={item.id}>
+                                <Table.Cell>
+                                    {new Date(
+                                        Date.parse(item.datetime)
+                                    ).toLocaleDateString("en-US", options)}
+                                    </Table.Cell>
+                                <Table.Cell>
+                                    {item.movie}
+                                    </Table.Cell>
+                                <Table.Cell>
+                                    {item.hall}
+                                    </Table.Cell>
+                                <Table.Cell>
+                                    <Link to={`/book/${item.id}`} onClick={(e) => this.saveMovieToStore(item, e)}>
+                                        Book tickets
+                                    </Link>
+                                </Table.Cell>                       
+                            </Table.Row>
+                        ))}
+                        </Table.Body>
                     </Table>
+
                 </Container>
+
                 <Container style={{ marginTop: '2em' }} textAlign="center">
-                    {this.state && this.state.error &&
+                    {this.state.error &&
                         <Message negative>
                             <Message.Header>We're sorry we can't show timetable</Message.Header>
                             <p>{this.state.error} Try again to get timetable.</p>
                         </Message>
                     }
                 </Container>
+
             </Container>
         );
     }

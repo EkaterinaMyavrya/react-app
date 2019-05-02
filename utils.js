@@ -1,20 +1,15 @@
-function promisify(fnToPromisify){
-
+function promisify(fnToPromisify) {
     return (...args) => {
-       
-        return new Promise((resolve, reject) => {    
-                 
+        return new Promise((resolve, reject) => {
             fnToPromisify(...args, (error, result) => {
-                if (error) {                
+                if (error) {
                     reject(error);
-                } else {                
+                } else {
                     resolve(result);
                 }
-            });            
+            });
         });
     };
-};
+}
 
-
-exports.promisify = (fnToPromisify) => promisify(fnToPromisify);
-
+exports.promisify = fnToPromisify => promisify(fnToPromisify);
