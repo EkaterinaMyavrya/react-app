@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 dbManager.createDb();
 
 app.get("/timetable", function(req, res) {
+    /*res.status(400);
+    res.send("error happens");*/
     // returns error if try to open site right after server is started
     dbManager
         .getTimeTable()
@@ -26,7 +28,7 @@ app.get("/timetable", function(req, res) {
 app.get("/bookTickets/:movieId", function(req, res) {
     // todo: uncomment if you would like to see error
     //res.status(400);
-    //res.send('error happens');
+    //res.send("error happens");
     dbManager
         .getMovieChairs(req.params.movieId)
         .then(movieChairs => res.json(movieChairs))
@@ -40,7 +42,7 @@ app.get("/bookTickets/:movieId", function(req, res) {
 app.post("/bookTickets", function(req, res) {
     // todo: uncomment if you would like to see error
     //res.status(400);
-    //res.send('error happens');
+    //res.send("error happens");
     dbManager
         .bookChairs(req.body.movieId, req.body.seatIds)
         .then(res.send("success"))

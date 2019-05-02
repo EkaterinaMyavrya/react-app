@@ -8,7 +8,7 @@ const mapStateToProps = state => {
     return {
         movieChairsRows: state.movieChairs,
         bookedChairs: state.bookedChairs,
-        error: state.errorLoadingChairs,
+        error: state.errorLoadingChairs || state.errorBookingChairs,
         movieName: state.movieName,
         movieTime: state.movieTime,
         movieHall: state.movieHall
