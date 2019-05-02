@@ -1,34 +1,42 @@
 import React from "react";
-import store from "./reduxStore/store.js";
-import { bookChair, unbookChair } from "./reduxStore/actions.js";
-import classnames  from "classnames";
+import { connect } from "react-redux";
+import { unbookChair, bookChair } from './reduxStore/actions';
+import classnames from "classnames";
 
-export class Chair extends React.Component {
+const mapDispatchToProps = (dispatch) => {
+    return {
+        unbookChair: (id) => dispatch(unbookChair(id)),
+        bookChair: (id) => dispatch(bookChair(id))
+    };
+}
+
+
+class InnerChair extends React.Component {
     constructor(props) {
-        super(props);      
-            this.state = {
-                booked: false
-            };
-      
+        super(props);
+        this.state = {
+            booked: false
+        };
+
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick(e) {
         e.preventDefault();
-        if (this.props.seatState && this.props.seatState != "booked"){
+        if (this.props.seatState && this.props.seatState != "booked") {
             if (this.state.booked) {
-                store.dispatch(unbookChair(this.props.id));
+                this.props.unbookChair(this.props.id);
 
             }
             else {
-                store.dispatch(bookChair(this.props.id));
+                this.props.bookChair(this.props.id);
             }
 
-            this.setState(state => ({booked: !state.booked}));          
+            this.setState(state => ({ booked: !state.booked }));
         }
     }
 
-    render() {     
+    render() {
 
         const seatState = this.props.seatState;
         const chairClassName = classnames({
@@ -38,10 +46,22 @@ export class Chair extends React.Component {
             'chair--state-free': seatState != "booked" && !this.state.booked
         });
 
-        return (                
-            <span className={chairClassName} key={this.props.id} onClick={this.handleClick}>                                     
-                    {this.props.seat}
-            </span>   
+        return (
+            <span className={chairClassName} key={this.props.id} onClick={this.handleClick}>
+                {this.props.seat}
+            </span>
         );
-    }         
+    }
 };
+
+
+
+const ConnectedChair = connect(null, mapDispatchToProps)(InnerChair);
+// for routing
+export class Chair extends React.Component {   
+    render() {
+        return (
+            <ConnectedChair {...this.props} />
+        )
+    }
+}

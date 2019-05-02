@@ -2,7 +2,12 @@ import {
     SAVE_MOVIE,
     BOOK_CHAIR,
     UNBOOK_CHAIR,
-    CLEAR_BOOKED_CHAIRS
+    CLEAR_BOOKED_CHAIRS,
+    TIME_TABLE_LOADING_FAILS,
+    TIME_TABLE_FETCH_SUCCESS,
+    MOVIE_CHAIRS_LOADING_FAILS,
+    MOVIE_CHAIRS_FETCH_SUCCESS,
+    BOOK_CHAIRS_FAILED
 } from "./actionTypes.js";
 
 const identity = state => state;
@@ -29,18 +34,51 @@ const unBookChair = (state, chair) => ({
 
 const clearBookedChairs = (state, payload) => ({ ...state, bookedChairs: [] });
 
+const timeTableLoadingFailed = (state, payload) => ({
+    ...state,
+    errorLoadingTimeTableRows: payload
+});
+const timeTableFetch = (state, payload) => ({
+    ...state,
+    timeTableRows: payload
+});
+
+const movieChairsLoadingFailed = (state, payload) => ({
+    ...state,
+    errorLoadingChairs: payload
+});
+const movieChairsFetch = (state, payload) => ({
+    ...state,
+    movieChairs: payload
+});
+
+const bookChairFailed = (state, payload) => ({
+    ...state,
+    errorBookingChairs: payload
+});
+
 const reducers = {
     [SAVE_MOVIE]: saveMovie,
     [BOOK_CHAIR]: bookChair,
     [UNBOOK_CHAIR]: unBookChair,
-    [CLEAR_BOOKED_CHAIRS]: clearBookedChairs
+    [CLEAR_BOOKED_CHAIRS]: clearBookedChairs,
+    [TIME_TABLE_LOADING_FAILS]: timeTableLoadingFailed,
+    [TIME_TABLE_FETCH_SUCCESS]: timeTableFetch,
+    [MOVIE_CHAIRS_FETCH_SUCCESS]: movieChairsFetch,
+    [MOVIE_CHAIRS_LOADING_FAILS]: movieChairsLoadingFailed,
+    [BOOK_CHAIRS_FAILED]: bookChairFailed
 };
 
 const initialState = {
     movieName: "",
     movieTime: "",
     movieHall: "",
-    bookedChairs: []
+    bookedChairs: [],
+    movieChairs: [],
+    errorLoadingChairs: "",
+    errorLoadingTimeTableRows: "",
+    errorBookingChairs: "",
+    timeTableRows: []
 };
 
 const rootReducer = (state = initialState, action) => {
