@@ -6,19 +6,19 @@ import { Button, Header, Grid, Container, Message, Divider } from 'semantic-ui-r
 
 
 function groupByRow(list) {  
-    const result = list.reduce(function (res, item) {
+    return list.reduce((res, item) => {
         res[item.row] = res[item.row] || [];
         res[item.row].push(item);
         return res;
     }, []);
-    return result;
 }
 
 export class Tickets extends React.Component {
     constructor(props) {
         super(props);       
         this.state = {
-                movieChairsRows: []
+                movieChairsRows: [],
+                error: null
        };
 
        this.bookChairs = this.bookChairs.bind(this);
@@ -40,8 +40,8 @@ export class Tickets extends React.Component {
             if (response.ok) { return response.json();}
             throw new Error("Server returned error.");
         })
-        .then(parsedJson => {               
-                this.setState({ movieChairsRows: parsedJson });
+        .then(movieChairsRows => {               
+                this.setState({ movieChairsRows: movieChairsRows });
         }).catch (err => {
                 console.log(err);
                 this.setState({ error: err.message });
@@ -89,38 +89,19 @@ export class Tickets extends React.Component {
     }
 
     getMovieName(){
-        const currentState = store.getState();
-        if (currentState && currentState.movieName) {
-            return currentState.movieName;
-        }
-
-        return '';
+        return store.getState().movieName;       
     }
 
     getMovieTime() {
-        const currentState = store.getState();
-        if (currentState.movieName) {
-            return currentState.movieTime;
-        }
-
-        return '';
+        return store.getState().movieTime;
     }
 
     getMovieHall() {
-        const currentState = store.getState();
-        if (currentState.movieHall) {
-            return currentState.movieHall;
-        }
-
-        return '';
+        return store.getState().movieHall;       
     }
 
     render() {              
-               var groupedByRowResult = [];
-               if (this.state && this.state.movieChairsRows){
-                   groupedByRowResult = groupByRow(this.state.movieChairsRows);
-               }
-
+               
         const options = {          
             month: "long",
             day: "numeric",
@@ -130,7 +111,7 @@ export class Tickets extends React.Component {
             weekday: "short"
         };
 
-        var date = 
+        const date = 
             new Date(
                 Date.parse(this.getMovieTime())
             ).toLocaleDateString("en-US", options);
@@ -155,9 +136,9 @@ export class Tickets extends React.Component {
                         
                         <Container style={{ marginTop: '2em' }} textAlign="center">                         
                             Screen
-                            <Divider />
+                            <Divider />                            
                            <Grid>                                    
-                           {groupedByRowResult.map(arrayItem => (
+                            {groupByRow(this.state.movieChairsRows).map(arrayItem => (
                                <Grid.Row key={arrayItem[0].row}>
                                    <Grid.Column width="3" textAlign="right">   
                                     Row {arrayItem[0].row} 
@@ -172,8 +153,7 @@ export class Tickets extends React.Component {
                                       Row {arrayItem[0].row} 
                                     </Grid.Column>                   
                               </Grid.Row> 
-                               ))}
-                       
+                               ))}                       
                           </Grid>
                         </Container>
 

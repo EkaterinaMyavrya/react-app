@@ -14,7 +14,8 @@ export class TimeTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            timeTableRows: []
+            timeTableRows: [],
+            error: null
         };
 
         this.saveMovieToStore = this.saveMovieToStore.bind(this);

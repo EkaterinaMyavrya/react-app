@@ -24,12 +24,11 @@ app.get("/timetable", function(req, res) {
 });
 
 app.get("/bookTickets/:movieId", function(req, res) {
-    var movieId = req.params.movieId;
     // todo: uncomment if you would like to see error
     //res.status(400);
     //res.send('error happens');
     dbManager
-        .getMovieChairs(movieId)
+        .getMovieChairs(req.params.movieId)
         .then(movieChairs => res.json(movieChairs))
         .catch(err => {
             console.log(err);
